@@ -10,7 +10,7 @@ def GenerateRandomTree(functions, terminals, max_height=4, curr_height=0):
 		idx = randint(len(terminals))
 		n = deepcopy( terminals[idx] )
 	else:
-		if random() < 0.25:
+		if random() < 0.33:
 			n = deepcopy( terminals[randint(len(terminals))] )
 		else:
 			idx = randint( len(functions) )

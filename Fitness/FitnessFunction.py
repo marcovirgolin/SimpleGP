@@ -10,7 +10,15 @@ class SymbolicRegressionFitness:
 
 	def Evaluate( self, individual ):
 		output = individual.GetOutput( self.X_train )
-		mean_squared_error = np.mean ( np.square( output - self.y_train ) )
+
+		# linear scaling
+		try:
+			b = np.cov( output, self.y_train )[0,0] / np.var( output )
+		except:
+			b = 0
+		a = np.mean(self.y_train) - np.mean(output)*b
+
+		mean_squared_error = np.mean ( np.square( self.y_train - (a + b*output) ) )
 		individual.fitness = mean_squared_error
 
 		if not self.elite or individual.fitness < self.elite.fitness:
