@@ -4,20 +4,20 @@ from numpy.random import randint
 from numpy.random import random
 
 
-def GenerateRandomTree(functions, terminals, max_height=4, curr_height=0):
+def GenerateRandomTree(functions, terminals, max_height, curr_depth=0):
 
-	if curr_height == max_height:
+	if curr_depth == max_height:
 		idx = randint(len(terminals))
 		n = deepcopy( terminals[idx] )
 	else:
-		if random() < 0.33:
+		if random() < 0.5:
 			n = deepcopy( terminals[randint(len(terminals))] )
 		else:
 			idx = randint( len(functions) )
 			n = deepcopy( functions[idx] )
 			for i in range(n.arity):
-				c = GenerateRandomTree( functions, terminals, max_height, curr_height + 1 )
-				n.children.append( c )
+				c = GenerateRandomTree( functions, terminals, max_height, curr_depth=curr_depth + 1 )
+				n.AppendChild( c ) # do not use n.children.append because that won't set the n as parent node of c
 
 	return n
 
@@ -35,6 +35,7 @@ def SubtreeMutation( individual, functions, terminals, max_height=4 ):
 	if not to_replace.parent:
 		del individual
 		return mutation_branch
+
 
 	p = to_replace.parent
 	idx = p.DetachChild(to_replace)
@@ -61,14 +62,16 @@ def SubtreeCrossover( individual, donor ):
 	if not p1:
 		return to_swap2
 
-	idx = p.DetachChild(to_swap1)
-	p.InsertChildAtPosition(to_swap2)
+	idx = p1.DetachChild(to_swap1)
+	p1.InsertChildAtPosition(idx, to_swap2)
 
 	return individual
 
 
 def __GetCandidateNodesAtUniformRandomDepth( nodes ):
+
 	depths = np.unique( [x.GetDepth() for x in nodes] )
 	chosen_depth = depths[randint(len(depths))]
 	candidates = [x for x in nodes if x.GetDepth() == chosen_depth]
+
 	return candidates

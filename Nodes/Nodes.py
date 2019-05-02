@@ -1,29 +1,35 @@
 import numpy as np
 
-# base class
-class Node:
+
+class Node:	# Base class with general operations
 
 	def __init__(self):
-		self.parent = None
-		self.arity = 0
-		self.children = []
 		self.fitness = np.inf
+		self.parent = None
+		self.arity = 0	# arity is the number of expected inputs
+		self._children = []
 
 	def GetSubtree( self ):
 		result = []
 		self.__GetSubtreeRecursive(result)
 		return result
 
+	def AppendChild( self, N ):
+		self._children.append(N)
+		N.parent = self
+
 	def DetachChild( self, N ):
-		assert(N in self.children)
-		for i, c in enumerate(self.children):
+		assert(N in self._children)
+		for i, c in enumerate(self._children):
 			if c == N:
-				self.children.pop(i)
+				self._children.pop(i)
+				N.parent = None
 				break
 		return i
 
 	def InsertChildAtPosition( self, i, N ):
-		self.children.insert( i, N )
+		self._children.insert( i, N )
+		N.parent = self
 
 	def GetOutput( self, X ):
 		return None
@@ -38,54 +44,76 @@ class Node:
 
 	def __GetSubtreeRecursive( self, result ):
 		result.append(self)
-		for c in self.children:
+		for c in self._children:
 			c.__GetSubtreeRecursive( result )
 		return result
 
-
+''' CUSTOM NODES '''
 
 class AddNode(Node):
 	def __init__(self):
 		super(AddNode,self).__init__()
 		self.arity = 2
 
+	def __repr__(self):
+		return '+'
+
 	def GetOutput( self, X ):
-		X0 = self.children[0].GetOutput( X )
-		X1 = self.children[1].GetOutput( X )
+		X0 = self._children[0].GetOutput( X )
+		X1 = self._children[1].GetOutput( X )
 		return X0 + X1
-
-
-class MulNode(Node):
-	def __init__(self):
-		super(MulNode,self).__init__()
-		self.arity = 2
-
-	def GetOutput( self, X ):
-		X0 = self.children[0].GetOutput( X )
-		X1 = self.children[1].GetOutput( X )
-		return X0 % X1
-
 
 class SubNode(Node):
 	def __init__(self):
 		super(SubNode,self).__init__()
 		self.arity = 2
 
+	def __repr__(self):
+		return '-'
+
 	def GetOutput( self, X ):
-		X0 = self.children[0].GetOutput( X )
-		X1 = self.children[1].GetOutput( X )
+		X0 = self._children[0].GetOutput( X )
+		X1 = self._children[1].GetOutput( X )
 		return X0 - X1
 
+class MulNode(Node):
+	def __init__(self):
+		super(MulNode,self).__init__()
+		self.arity = 2
+
+	def __repr__(self):
+		return '*'
+
+	def GetOutput( self, X ):
+		X0 = self._children[0].GetOutput( X )
+		X1 = self._children[1].GetOutput( X )
+		return np.multiply(X0 , X1)
 	
 class DivNode(Node):
 	def __init__(self):
 		super(DivNode,self).__init__()
 		self.arity = 2
 
+	def __repr__(self):
+		return '/'
+
 	def GetOutput( self, X ):
-		X0 = self.children[0].GetOutput( X )
-		X1 = self.children[1].GetOutput( X )
-		return np.sign(X1) % X0 / ( 1e-2 + np.abs(X1) )
+		X0 = self._children[0].GetOutput( X )
+		X1 = self._children[1].GetOutput( X )
+		return np.multiply( np.sign(X1), X0) / ( 1e-2 + np.abs(X1) )
+
+class AnalyticQuotientNode(Node):
+	def __init__(self):
+		super(AnalyticQuotientNode,self).__init__()
+		self.arity = 2
+
+	def __repr__(self):
+		return 'aq'
+
+	def GetOutput( self, X ):
+		X0 = self._children[0].GetOutput( X )
+		X1 = self._children[1].GetOutput( X )
+		return X0 / np.sqrt( 1 + np.square(X1) )
 
 	
 class ExpNode(Node):
@@ -93,8 +121,11 @@ class ExpNode(Node):
 		super(ExpNode,self).__init__()
 		self.arity = 1
 
+	def __repr__(self):
+		return 'exp'
+
 	def GetOutput( self, X ):
-		X0 = self.children[0].GetOutput( X )
+		X0 = self._children[0].GetOutput( X )
 		return np.exp(X0)
 
 
@@ -103,8 +134,11 @@ class LogNode(Node):
 		super(LogNode,self).__init__()
 		self.arity = 1
 
+	def __repr__(self):
+		return 'log'
+
 	def GetOutput( self, X ):
-		X0 = self.children[0].GetOutput( X )
+		X0 = self._children[0].GetOutput( X )
 		return np.log( np.abs(X0) + 1e-2 )
 
 
@@ -113,8 +147,11 @@ class SinNode(Node):
 		super(SinNode,self).__init__()
 		self.arity = 1
 
+	def __repr__(self):
+		return 'sin'
+
 	def GetOutput( self, X ):
-		X0 = self.children[0].GetOutput( X )
+		X0 = self._children[0].GetOutput( X )
 		return np.sin(X0)
 
 class CosNode(Node):
@@ -122,8 +159,11 @@ class CosNode(Node):
 		super(CosNode,self).__init__()
 		self.arity = 1
 
+	def __repr__(self):
+		return 'cos'
+
 	def GetOutput( self, X ):
-		X0 = self.children[0].GetOutput( X )
+		X0 = self._children[0].GetOutput( X )
 		return np.cos(X0)
 
 
@@ -131,6 +171,9 @@ class FeatureNode(Node):
 	def __init__(self, id):
 		super(FeatureNode,self).__init__()
 		self.id = id
+
+	def __repr__(self):
+		return 'x'+str(self.id)
 
 	def GetOutput(self, X):
 		return X[:,self.id]
@@ -141,7 +184,15 @@ class EphemeralRandomConstantNode(Node):
 		super(EphemeralRandomConstantNode,self).__init__()
 		self.c = np.nan
 
+	def __Instantiate(self):
+		self.c = np.round( np.random.random() * 10 - 5, 3 )
+
+	def __repr__(self):
+		if np.isnan(self.c):
+			self.__Instantiate()
+		return str(self.c)
+
 	def GetOutput(self,X):
 		if np.isnan(self.c):
-			self.c = np.random.random() * 10 - 5
+			self.__Instantiate()
 		return self.c
