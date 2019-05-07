@@ -1,0 +1,6 @@
+=========
+Simple GP
+=========
+
+A simple implementation of genetic programming for symbolic regression.
+
