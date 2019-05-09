@@ -19,7 +19,7 @@ class SimpleGP:
 		mutation_rate=0.5,
 		max_evaluations=-1,
 		max_generations=-1,
-		max_time=10,
+		max_time=-1,
 		initialization_max_tree_height=4,
 		max_tree_size=100,
 		tournament_size=4
@@ -46,11 +46,11 @@ class SimpleGP:
 	def __ShouldTerminate(self):
 		must_terminate = False
 		elapsed_time = time.time() - self.start_time
-		if self.max_evaluations > 0 and self.fitness_function.evaluations > self.max_evaluations:
+		if self.max_evaluations > 0 and self.fitness_function.evaluations >= self.max_evaluations:
 			must_terminate = True
-		elif self.max_generations > 0 and self.generations > self.max_generations:
+		elif self.max_generations > 0 and self.generations >= self.max_generations:
 			must_terminate = True
-		elif self.max_time > 0 and elapsed_time > self.max_time:
+		elif self.max_time > 0 and elapsed_time >= self.max_time:
 			must_terminate = True
 
 		if must_terminate:
@@ -94,4 +94,4 @@ class SimpleGP:
 
 			self.generations = self.generations + 1
 
-			print ('g:',self.generations,'best fit:', np.round(self.fitness_function.elite.fitness,3), 'best size:', len(self.fitness_function.elite.GetSubtree()))
+			print ('g:',self.generations,'elite fitness:', np.round(self.fitness_function.elite.fitness,3), ', size:', len(self.fitness_function.elite.GetSubtree()))

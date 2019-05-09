@@ -25,7 +25,8 @@ terminals = [ EphemeralRandomConstantNode() ]	# use one ephemeral random constan
 for i in range(X.shape[1]):
 	terminals.append(FeatureNode(i))	# add a feature node for each feature
 
-sgp = SimpleGP(fitness_function, functions, terminals, pop_size=100, max_time=30)	# other parameters are optional
+# Run GP
+sgp = SimpleGP(fitness_function, functions, terminals, pop_size=100, max_generations=100)	# other parameters are optional
 sgp.Run()
 
 # Print results
@@ -37,7 +38,7 @@ print ('Function found (',len(nodes_final_evolved_function),'nodes ):\n\t', node
 print ('Training\n\tMSE:', np.round(final_evolved_function.fitness,3), 
 	'\n\tRsquared:', np.round(1.0 - final_evolved_function.fitness / np.var(y_train),3))
 # Re-evaluate the evolved function on the test set
-test_fitness_function = SymbolicRegressionFitness( X_test, y_test )
-test_fitness_function.Evaluate( final_evolved_function )
-print ('Test:\n\tMSE:', np.round( final_evolved_function.fitness, 3), 
-	'\n\tRsquared:', np.round(1.0 - final_evolved_function.fitness / np.var(y_test),3))
+test_prediction = final_evolved_function.GetOutput( X_test )
+test_mse = np.mean(np.square( y_test - test_prediction ))
+print ('Test:\n\tMSE:', np.round( test_mse, 3), 
+	'\n\tRsquared:', np.round(1.0 - test_mse / np.var(y_test),3))
