@@ -4,9 +4,9 @@ from numpy.random import randint
 from numpy.random import random
 
 
-def GenerateRandomTree(functions, terminals, max_height, curr_depth=0):
+def GenerateRandomTree(functions, terminals, max_height, curr_height=0):
 
-	if curr_depth == max_height:
+	if curr_height == max_height:
 		idx = randint(len(terminals))
 		n = deepcopy( terminals[idx] )
 	else:
@@ -16,7 +16,7 @@ def GenerateRandomTree(functions, terminals, max_height, curr_depth=0):
 			idx = randint( len(functions) )
 			n = deepcopy( functions[idx] )
 			for i in range(n.arity):
-				c = GenerateRandomTree( functions, terminals, max_height, curr_depth=curr_depth + 1 )
+				c = GenerateRandomTree( functions, terminals, max_height, curr_height=curr_height + 1 )
 				n.AppendChild( c ) # do not use n.children.append because that won't set the n as parent node of c
 
 	return n
