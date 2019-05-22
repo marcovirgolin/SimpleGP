@@ -148,4 +148,4 @@ class EphemeralRandomConstantNode(Node):
 	def GetOutput(self,X):
 		if np.isnan(self.c):
 			self.__Instantiate()
-		return np.array([self.c] * len(X))
+		return np.array([self.c] * X.shape[0])
