@@ -2,12 +2,12 @@ from distutils.core import setup
 
 setup(
     name='SimpleGP',
-    version='0.4',
+    version='0.5',
     author='Marco Virgolin',
     author_email='marco.virgolin@gmail.com',
     url='https://github.com/marcovirgolin/SimpleGP',
     packages=[
-	'simplegp',
+        'simplegp',
     	'simplegp.Evolution',
     	'simplegp.Fitness',
     	'simplegp.Nodes',

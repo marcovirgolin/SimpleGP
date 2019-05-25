@@ -73,11 +73,11 @@ class SimpleGP:
 
 			O = []
 			
-			for i in range(len(population)):
+			for i in range( self.pop_size ):
 				
 				o = deepcopy(population[i])
 				if ( random() < self.crossover_rate ):
-					o = Variation.SubtreeCrossover( o, population[randint(len(population))] )
+					o = Variation.SubtreeCrossover( o, population[ randint( self.pop_size ) ] )
 				if ( random() < self.mutation_rate ):
 					o = Variation.SubtreeMutation( o, self.functions, self.terminals, max_height=self.initialization_max_tree_height )
 				
@@ -90,7 +90,7 @@ class SimpleGP:
 				O.append(o)
 
 			PO = population+O
-			population = Selection.TournamentSelect( PO, len(population), tournament_size=self.tournament_size )
+			population = Selection.TournamentSelect( PO, self.pop_size, tournament_size=self.tournament_size )
 
 			self.generations = self.generations + 1
 
