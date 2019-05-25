@@ -73,7 +73,7 @@ class SimpleGP:
 
 			O = []
 			
-			for i in range(len(population) - 1):
+			for i in range(len(population)):
 				
 				o = deepcopy(population[i])
 				if ( random() < self.crossover_rate ):
