@@ -30,7 +30,7 @@ print('Type of X_train: ', X_train.dtype)
 print('Type of y_train: ', y_train.dtype)
 
 # Set fitness function
-fitness_function = SymbolicRegressionFitness(X_train, y_train)
+fitness_function = SymbolicRegressionFitness(X_train, y_train.astype(float))
 print(fitness_function)
 
 

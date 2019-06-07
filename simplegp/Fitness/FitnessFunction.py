@@ -13,10 +13,16 @@ class SymbolicRegressionFitness:
 
 		self.evaluations = self.evaluations + 1
 
-		output = individual.GetOutput( self.X_train )
-
-		mean_squared_error = np.mean ( np.square( self.y_train - output ) )
-		individual.fitness = mean_squared_error
+		output = np.arctan(individual.GetOutput( self.X_train ))
+		
+		output[output >= 0] = 1
+		output[output < 0] = -1
+		
+		
+		error_rate = 1 - (np.sum(self.y_train == output) / len(self.y_train))
+		#mean_squared_error = np.mean ( np.square( self.y_train - output ) )
+		
+		individual.fitness = error_rate
 
 		if not self.elite or individual.fitness < self.elite.fitness:
 			del self.elite
