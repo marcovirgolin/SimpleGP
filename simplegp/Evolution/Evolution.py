@@ -85,6 +85,7 @@ class SimpleGP:
 					del o
 					o = deepcopy( population[i] )
 				else:
+					#TODO Weight tuning here
 					self.fitness_function.Evaluate(o)
 
 				O.append(o)
