@@ -9,21 +9,28 @@ class SymbolicRegressionFitness:
 		self.elite = None
 		self.evaluations = 0
 
-	def Evaluate( self, individual ):
-
-		self.evaluations = self.evaluations + 1
+	def getFitness( self, individual ):
 
 		output = np.arctan(individual.GetOutput( self.X_train ))
-		
 		output[output >= 0] = 1
 		output[output < 0] = -1
 		
-		
 		error_rate = 1 - (np.sum(self.y_train == output) / len(self.y_train))
-		#mean_squared_error = np.mean ( np.square( self.y_train - output ) )
+		return error_rate
+	
+		
+	def Evaluate( self, individual ):
+
+		self.evaluations = self.evaluations + 1
+		
+		error_rate = self.getFitness(individual)
 		
 		individual.fitness = error_rate
 
 		if not self.elite or individual.fitness < self.elite.fitness:
 			del self.elite
 			self.elite = deepcopy(individual)
+			
+
+			
+			
