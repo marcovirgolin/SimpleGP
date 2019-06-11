@@ -17,6 +17,6 @@ setup(
     license='The MIT License',
     long_description=open('README.md').read(),
     install_requires=[
-    	"numpy >= 1.16.1",
+    	"numpy >= 1.16.1", 'deap'
     ],
 )

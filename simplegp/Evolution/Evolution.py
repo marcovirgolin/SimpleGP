@@ -3,6 +3,7 @@ from numpy.random import random, randint
 import time
 from copy import deepcopy
 
+from realEA import RealEA
 from simplegp.Variation import Variation
 from simplegp.Selection import Selection
 
@@ -41,7 +42,7 @@ class SimpleGP:
 		self.tournament_size = tournament_size
 
 		self.generations = 0
-
+		self.ea = RealEA()
 
 	def __ShouldTerminate(self):
 		must_terminate = False
@@ -86,6 +87,7 @@ class SimpleGP:
 					o = deepcopy( population[i] )
 				else:
 					#TODO Weight tuning here
+					realEA.setWeights(o)
 					self.fitness_function.Evaluate(o)
 
 				O.append(o)
