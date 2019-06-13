@@ -127,9 +127,9 @@ class CosNode(Node):
 
 
 class FeatureNode(Node):
-    def __init__(self, id):
+    def __init__(self, f_id):
         super(FeatureNode, self).__init__()
-        self.id = id
+        self.id = f_id
 
     def __repr__(self):
         return 'x' + str(self.id)

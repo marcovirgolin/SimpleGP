@@ -16,6 +16,16 @@ class Node:  # Base class with general functionalities
         self.__get_subtree_recursive(result)
         return result
 
+    def get_subtree_scaling(self):
+        result = []
+        self.__get_subtree_scaling_recursive(result)
+        return result
+
+    def get_subtree_translation(self):
+        result = []
+        self.__get_subtree_translation_recursive(result)
+        return result
+
     def append_child(self, N, scale=1, translate=0):
         self._children.append(N)
         self._children_scaling.append(scale)
@@ -59,4 +69,16 @@ class Node:  # Base class with general functionalities
         result.append(self)
         for c in self._children:
             c.__get_subtree_recursive(result)
+        return result
+
+    def __get_subtree_scaling_recursive(self, result):
+        for i, c in enumerate(self._children):
+            result.append(self._children_scaling[i])
+            c.__get_subtree_scaling_recursive(result)
+        return result
+
+    def __get_subtree_translation_recursive(self, result):
+        for i, c in enumerate(self._children):
+            result.append(self._children_translation[i])
+            c.__get_subtree_translation_recursive(result)
         return result
