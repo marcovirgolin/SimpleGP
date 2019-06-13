@@ -41,3 +41,17 @@ test_prediction = final_evolved_function.get_output(X_test)
 test_mse = np.mean(np.square(y_test - test_prediction))
 print('Test:\n\tMSE:', np.round(test_mse, 3),
       '\n\tRsquared:', np.round(1.0 - test_mse / np.var(y_test), 3))
+
+# Test get/set scaling
+original_scaling = final_evolved_function.get_subtree_scaling()
+set_scaling = np.random.uniform(0, 1, len(original_scaling)).tolist()
+final_evolved_function.set_subtree_scaling(set_scaling)
+get_scaling = final_evolved_function.get_subtree_scaling()
+assert set_scaling == get_scaling
+
+# Test get/set translations
+original_translation = final_evolved_function.get_subtree_translation()
+set_translation = np.random.uniform(-5, +5, len(original_translation)).tolist()
+final_evolved_function.set_subtree_translation(set_translation)
+get_translation = final_evolved_function.get_subtree_translation()
+assert set_translation == get_translation
