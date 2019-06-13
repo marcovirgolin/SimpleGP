@@ -24,15 +24,14 @@ class Node:  # Base class with general functionalities
             if c == N:
                 self._children.pop(i)
                 N.parent = None
-                break
-        return i
+                return i
 
     def insert_child_at_position(self, i, N):
         self._children.insert(i, N)
         N.parent = self
 
-        def get_output(self, X):
-            return None
+    def get_output(self, X):
+        return None
 
     def get_depth(self):
         n = self
