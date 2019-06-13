@@ -61,6 +61,7 @@ class Node:  # Base class with general functionalities
         X0 = self._children[i].get_output(X)
         X0 *= self._children_scaling[i]
         X0 += self._children_translation[i]
+
         return X0
 
     def get_depth(self):

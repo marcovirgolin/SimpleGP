@@ -1,4 +1,6 @@
 # Libraries
+import random
+
 import sklearn.datasets
 from sklearn.model_selection import train_test_split
 
@@ -6,8 +8,10 @@ from simplegp.Evolution.Evolution import SimpleGP
 from simplegp.Fitness.FitnessFunction import SymbolicRegressionFitness
 # Internal imports
 from simplegp.Nodes.SymbolicRegressionNodes import *
+from simplegp.Weights.Tunner import Tunner
 
 np.random.seed(42)
+random.seed(42)
 
 # Load regression dataset 
 X, y = sklearn.datasets.load_boston(return_X_y=True)
@@ -23,8 +27,8 @@ for i in range(X.shape[1]):
     terminals.append(FeatureNode(i))  # add a feature node for each feature
 
 # Run GP
-sgp = SimpleGP(fitness_function, functions, terminals, pop_size=100,
-               max_generations=100)  # other parameters are optional
+tunner = Tunner(fitness_function)
+sgp = SimpleGP(fitness_function, functions, terminals, tunner, pop_size=100, max_generations=100)
 sgp.run()
 
 # Print results

@@ -6,6 +6,7 @@ from numpy.random import random, randint
 
 from simplegp.Selection import Selection
 from simplegp.Variation import Variation
+from simplegp.Weights.Tunner import Tunner
 
 
 class SimpleGP:
@@ -15,6 +16,7 @@ class SimpleGP:
             fitness_function,
             functions,
             terminals,
+            tunner: Tunner,
             pop_size=500,
             crossover_rate=0.5,
             mutation_rate=0.5,
@@ -26,6 +28,7 @@ class SimpleGP:
             tournament_size=4
     ):
 
+        self.tunner = tunner
         self.start_time = 0
         self.pop_size = pop_size
         self.fitness_function = fitness_function
@@ -94,8 +97,15 @@ class SimpleGP:
 
             PO = population + offspring
             population = Selection.tournament_select(PO, self.pop_size, tournament_size=self.tournament_size)
+            POT = []
+            for indv in population:
+                if self.generations is 98:
+                    self.tunner.set_individual(indv)
+                    POT.append(self.tunner.tuneWeights())
+                else:
+                    POT.append(indv)
 
+            population = POT
             self.generations = self.generations + 1
-
             print('g:', self.generations, 'elite fitness:', np.round(self.fitness_function.elite.fitness, 3), ', size:',
                   len(self.fitness_function.elite.get_subtree()))
