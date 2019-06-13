@@ -13,8 +13,8 @@ class AddNode(Node):
         return '+'
 
     def get_output(self, X):
-        X0 = self._children[0].get_output(X)
-        X1 = self._children[1].get_output(X)
+        X0 = self.get_child_output(0, X)
+        X1 = self.get_child_output(1, X)
         return X0 + X1
 
 
@@ -27,8 +27,8 @@ class SubNode(Node):
         return '-'
 
     def get_output(self, X):
-        X0 = self._children[0].get_output(X)
-        X1 = self._children[1].get_output(X)
+        X0 = self.get_child_output(0, X)
+        X1 = self.get_child_output(1, X)
         return X0 - X1
 
 
@@ -41,8 +41,8 @@ class MulNode(Node):
         return '*'
 
     def get_output(self, X):
-        X0 = self._children[0].get_output(X)
-        X1 = self._children[1].get_output(X)
+        X0 = self.get_child_output(0, X)
+        X1 = self.get_child_output(1, X)
         return np.multiply(X0, X1)
 
 
@@ -55,8 +55,8 @@ class DivNode(Node):
         return '/'
 
     def get_output(self, X):
-        X0 = self._children[0].get_output(X)
-        X1 = self._children[1].get_output(X)
+        X0 = self.get_child_output(0, X)
+        X1 = self.get_child_output(1, X)
         return np.multiply(np.sign(X1), X0) / (1e-2 + np.abs(X1))
 
 
@@ -69,8 +69,8 @@ class AnalyticQuotientNode(Node):
         return 'aq'
 
     def get_output(self, X):
-        X0 = self._children[0].get_output(X)
-        X1 = self._children[1].get_output(X)
+        X0 = self.get_child_output(0, X)
+        X1 = self.get_child_output(1, X)
         return X0 / np.sqrt(1 + np.square(X1))
 
 
@@ -83,7 +83,7 @@ class ExpNode(Node):
         return 'exp'
 
     def get_output(self, X):
-        X0 = self._children[0].get_output(X)
+        X0 = self.get_child_output(0, X)
         return np.exp(X0)
 
 
@@ -96,7 +96,7 @@ class LogNode(Node):
         return 'log'
 
     def get_output(self, X):
-        X0 = self._children[0].get_output(X)
+        X0 = self.get_child_output(0, X)
         return np.log(np.abs(X0) + 1e-2)
 
 
@@ -109,7 +109,7 @@ class SinNode(Node):
         return 'sin'
 
     def get_output(self, X):
-        X0 = self._children[0].get_output(X)
+        X0 = self.get_child_output(0, X)
         return np.sin(X0)
 
 
@@ -122,7 +122,7 @@ class CosNode(Node):
         return 'cos'
 
     def get_output(self, X):
-        X0 = self._children[0].get_output(X)
+        X0 = self.get_child_output(0, X)
         return np.cos(X0)
 
 

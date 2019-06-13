@@ -36,8 +36,8 @@ def subtree_mutation(individual, functions, terminals, max_height=4):
         return mutation_branch
 
     p = to_replace.parent
-    idx = p.detach_child(to_replace)
-    p.insert_child_at_position(idx, mutation_branch)
+    idx, scale, translate = p.detach_child(to_replace)
+    p.insert_child_at_position(idx, mutation_branch, scale, translate)
 
     return individual
 
@@ -52,15 +52,15 @@ def subtree_crossover(individual, donor):
     nodes2 = __get_candidate_nodes_at_uniform_random_depth(nodes2)
 
     to_swap1 = nodes1[randint(len(nodes1))]
-    to_swap2 = deepcopy(nodes2[randint(len(nodes2))])  # we deep copy now, only the sutbree from parent2
+    to_swap2 = deepcopy(nodes2[randint(len(nodes2))])  # we deep copy now, only the subtree from parent2
 
     p1 = to_swap1.parent
 
     if not p1:
         return to_swap2
 
-    idx = p1.detach_child(to_swap1)
-    p1.insert_child_at_position(idx, to_swap2)
+    idx, scale, translate = p1.detach_child(to_swap1)
+    p1.insert_child_at_position(idx, to_swap2, scale, translate)
 
     return individual
 

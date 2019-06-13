@@ -4,7 +4,7 @@ from numpy.random import randint
 
 
 def tournament_select(population, how_many_to_select, tournament_size=4):
-    # this is a stocastic variation of tournament selection
+    # this is a stochastic variation of tournament selection
     pop_size = len(population)
     selection = []
 

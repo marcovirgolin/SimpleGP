@@ -26,6 +26,7 @@ class SimpleGP:
             tournament_size=4
     ):
 
+        self.start_time = 0
         self.pop_size = pop_size
         self.fitness_function = fitness_function
         self.functions = functions
@@ -72,7 +73,7 @@ class SimpleGP:
 
         while not self.__should_terminate():
 
-            O = []
+            offspring = []
 
             for i in range(self.pop_size):
 
@@ -89,9 +90,9 @@ class SimpleGP:
                 else:
                     self.fitness_function.evaluate(o)
 
-                O.append(o)
+                offspring.append(o)
 
-            PO = population + O
+            PO = population + offspring
             population = Selection.tournament_select(PO, self.pop_size, tournament_size=self.tournament_size)
 
             self.generations = self.generations + 1
