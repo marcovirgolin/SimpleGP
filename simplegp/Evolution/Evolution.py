@@ -6,7 +6,7 @@ from numpy.random import random, randint
 
 from simplegp.Selection import Selection
 from simplegp.Variation import Variation
-from simplegp.Weights.Tunner import Tunner
+from simplegp.Weights.Tuner import Tunner
 
 
 class SimpleGP:

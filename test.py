@@ -8,7 +8,7 @@ from simplegp.Evolution.Evolution import SimpleGP
 from simplegp.Fitness.FitnessFunction import SymbolicRegressionFitness
 # Internal imports
 from simplegp.Nodes.SymbolicRegressionNodes import *
-from simplegp.Weights.Tunner import Tunner
+from simplegp.Weights.Tuner import Tunner
 
 np.random.seed(42)
 random.seed(42)
