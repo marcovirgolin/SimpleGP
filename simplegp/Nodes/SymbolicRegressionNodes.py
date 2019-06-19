@@ -15,6 +15,7 @@ class AddNode(Node):
     def get_output(self, X):
         X0 = self.get_child_output(0, X)
         X1 = self.get_child_output(1, X)
+
         return X0 + X1
 
 

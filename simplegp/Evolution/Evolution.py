@@ -95,17 +95,19 @@ class SimpleGP:
 
                 offspring.append(o)
 
+            OT = []
+            for indv in offspring:
+                if len(indv._children) > 0 and self.generations is 1:
+                    self.tunner.set_individual(indv)
+                    OT.append(self.tunner.tuneWeights())
+                else:
+                    OT.append(indv)
+
+            offspring = OT
+
             PO = population + offspring
             population = Selection.tournament_select(PO, self.pop_size, tournament_size=self.tournament_size)
-            POT = []
-            for indv in population:
-                if self.generations is 98:
-                    self.tunner.set_individual(indv)
-                    POT.append(self.tunner.tuneWeights())
-                else:
-                    POT.append(indv)
 
-            population = POT
             self.generations = self.generations + 1
             print('g:', self.generations, 'elite fitness:', np.round(self.fitness_function.elite.fitness, 3), ', size:',
                   len(self.fitness_function.elite.get_subtree()))

@@ -1,8 +1,11 @@
 # Libraries
+import math
 import random
 
 import sklearn.datasets
 from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
+from sklearn.preprocessing import StandardScaler
 
 from simplegp.Evolution.Evolution import SimpleGP
 from simplegp.Fitness.FitnessFunction import SymbolicRegressionFitness
@@ -17,6 +20,13 @@ random.seed(42)
 X, y = sklearn.datasets.load_boston(return_X_y=True)
 # Take a dataset split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
+
+# Normalize the data
+X_scaler = StandardScaler()
+X_scaler.fit(X_train)
+X_train = X_scaler.transform(X_train)
+X_test = X_scaler.transform(X_test)
+
 # Set fitness function
 fitness_function = SymbolicRegressionFitness(X_train, y_train)
 
@@ -45,17 +55,3 @@ test_prediction = final_evolved_function.get_output(X_test)
 test_mse = np.mean(np.square(y_test - test_prediction))
 print('Test:\n\tMSE:', np.round(test_mse, 3),
       '\n\tRsquared:', np.round(1.0 - test_mse / np.var(y_test), 3))
-
-# Test get/set scaling
-original_scaling = final_evolved_function.get_subtree_scaling()
-set_scaling = np.random.uniform(0, 1, len(original_scaling)).tolist()
-final_evolved_function.set_subtree_scaling(set_scaling)
-get_scaling = final_evolved_function.get_subtree_scaling()
-assert set_scaling == get_scaling
-
-# Test get/set translations
-original_translation = final_evolved_function.get_subtree_translation()
-set_translation = np.random.uniform(-5, +5, len(original_translation)).tolist()
-final_evolved_function.set_subtree_translation(set_translation)
-get_translation = final_evolved_function.get_subtree_translation()
-assert set_translation == get_translation

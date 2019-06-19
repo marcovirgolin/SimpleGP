@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import numpy as np
 
 
@@ -27,10 +29,10 @@ class Node:  # Base class with general functionalities
         return result
 
     def set_subtree_scaling(self, scales):
-        self.__set_subtree_scaling_recursive(scales.copy())
+        self.__set_subtree_scaling_recursive(deepcopy(scales))
 
     def set_subtree_translation(self, translations):
-        self.__set_subtree_translation_recursive(translations.copy())
+        self.__set_subtree_translation_recursive(deepcopy(translations))
 
     def append_child(self, N, scale=1, translate=0):
         self._children.append(N)
@@ -59,6 +61,7 @@ class Node:  # Base class with general functionalities
 
     def get_child_output(self, i, X):
         X0 = self._children[i].get_output(X)
+        X0 = deepcopy(X0)
         X0 *= self._children_scaling[i]
         X0 += self._children_translation[i]
 

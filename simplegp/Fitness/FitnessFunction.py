@@ -15,7 +15,6 @@ class SymbolicRegressionFitness:
         self.evaluations = self.evaluations + 1
 
         output = individual.get_output(self.X_train)
-
         mean_squared_error = np.mean(np.square(self.y_train - output))
         individual.fitness = mean_squared_error
 
