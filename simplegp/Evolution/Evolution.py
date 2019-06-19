@@ -13,10 +13,10 @@ class SimpleGP:
 
     def __init__(
             self,
-            fitness_function,
-            functions,
-            terminals,
             tuner: Tuner,
+            fitness_function=None,
+            functions=None,
+            terminals=None,
             pop_size=500,
             crossover_rate=0.5,
             mutation_rate=0.5,
@@ -65,7 +65,8 @@ class SimpleGP:
         return must_terminate
 
     def run(self):
-
+        # Reset the GA
+        self.generations = 0
         self.start_time = time.time()
 
         population = []
