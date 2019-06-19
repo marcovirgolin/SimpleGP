@@ -12,7 +12,7 @@ from simplegp.Nodes import BaseNode
 
 class Tuner:
 
-    def __init__(self, fitness: SymbolicRegressionFitness,
+    def __init__(self, fitness_function=None,
                  scale_range=(-5, 5), translation_range=(-5, 5),
                  run_generations=(),
                  population_fraction=1,
@@ -21,7 +21,7 @@ class Tuner:
 
         """
         Weight tuner for the variables of the real valued GA
-        :param fitness: fitness function to apply
+        :param fitness_function: fitness function to apply
         :param scale_range: tuple that indicates the range that the scaling variables can take on. Default: (-5, 5)
         :param translation_range: tuple that indicates the range that the translation variables can take on. Default: (-5, 5)
         :param run_generations: tuple containing the generation numbers to apply weight tuning e.g (99, 100).
@@ -38,7 +38,7 @@ class Tuner:
         self.translation_range = translation_range
         self.scale_range = scale_range
         self.individual = None
-        self.fitness = fitness
+        self.fitness_function = fitness_function
 
     def set_individual(self, individual: BaseNode):
         self.individual = deepcopy(individual)
@@ -81,7 +81,7 @@ class Tuner:
 
         self.individual.set_subtree_scaling(weights_scaling)
         self.individual.set_subtree_translation(weights_translation)
-        self.fitness.evaluate(self.individual)
+        self.fitness_function.evaluate(self.individual)
 
         return -self.individual.fitness
 

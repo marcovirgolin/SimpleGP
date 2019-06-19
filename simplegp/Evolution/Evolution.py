@@ -6,14 +6,13 @@ from numpy.random import random, randint
 
 from simplegp.Selection import Selection
 from simplegp.Variation import Variation
-from simplegp.Weights.Tuner import Tuner
 
 
 class SimpleGP:
 
     def __init__(
             self,
-            tuner: Tuner,
+            tuner=None,
             fitness_function=None,
             functions=None,
             terminals=None,
