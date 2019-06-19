@@ -16,7 +16,7 @@ class SimpleGP:
             fitness_function,
             functions,
             terminals,
-            tunner: Tuner,
+            tuner: Tuner,
             pop_size=500,
             crossover_rate=0.5,
             mutation_rate=0.5,
@@ -28,7 +28,7 @@ class SimpleGP:
             tournament_size=4
     ):
 
-        self.tunner = tunner
+        self.tuner = tuner
         self.start_time = 0
         self.pop_size = pop_size
         self.fitness_function = fitness_function
@@ -97,9 +97,11 @@ class SimpleGP:
 
             OT = []
             for indv in offspring:
-                if len(indv._children) > 0 and self.generations is 1:
-                    self.tunner.set_individual(indv)
-                    OT.append(self.tunner.tuneWeights())
+                if len(indv._children) > 0 and self.generations in self.tuner.run_generations:
+                    if random() < self.tuner.population_fraction:
+                        self.tuner.set_individual(indv)
+                        indv = self.tuner.tuneWeights()
+                    OT.append(indv)
                 else:
                     OT.append(indv)
 

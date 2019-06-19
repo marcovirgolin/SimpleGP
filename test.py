@@ -37,8 +37,8 @@ for i in range(X.shape[1]):
     terminals.append(FeatureNode(i))  # add a feature node for each feature
 
 # Run GP
-tunner = Tuner(fitness_function)
-sgp = SimpleGP(fitness_function, functions, terminals, tunner, pop_size=100, max_generations=100)
+tuner = Tuner(fitness_function)
+sgp = SimpleGP(fitness_function, functions, terminals, tuner, pop_size=100, max_generations=100)
 sgp.run()
 
 # Print results

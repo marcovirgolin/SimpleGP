@@ -12,22 +12,46 @@ from simplegp.Nodes import BaseNode
 
 class Tuner:
 
-    def __init__(self, fitness: SymbolicRegressionFitness):
+    def __init__(self, fitness: SymbolicRegressionFitness,
+                 scale_range=(-5, 5), translation_range=(-5, 5),
+                 run_generations=(),
+                 population_fraction=1,
+                 max_iterations=20,
+                 pop_size=100):
+
+        """
+        Weight tuner for the variables of the real valued GA
+        :param fitness: fitness function to apply
+        :param scale_range: tuple that indicates the range that the scaling variables can take on. Default: (-5, 5)
+        :param translation_range: tuple that indicates the range that the translation variables can take on. Default: (-5, 5)
+        :param run_generations: tuple containing the generation numbers to apply weight tuning e.g (99, 100).
+        Defaults to not running in any generation i.e an empty tuple.
+        :param population_fraction: probability that tuning is applied to an individual in any given generation
+        e.g 0.5 for half of the population. Defaults to all individuals i.e. 1.
+        :param max_iterations: Number of iterations to run the real valued GA for. Default 20.
+        :param pop_size: Population size to be used by the real valued GA. Default 100
+        """
+        self.pop_size = pop_size
+        self.max_iterations = max_iterations
+        self.population_fraction = population_fraction
+        self.run_generations = run_generations
+        self.translation_range = translation_range
+        self.scale_range = scale_range
         self.individual = None
         self.fitness = fitness
 
     def set_individual(self, individual: BaseNode):
         self.individual = deepcopy(individual)
 
-    def tuneWeights(self, range_scaling=(0.5, 1.5), range_translation=(-5, 5)):
+    def tuneWeights(self):
         old_fitness = self.individual.fitness
 
         weights_scaling = self.individual.get_subtree_scaling()
         weights_translation = self.individual.get_subtree_translation()
-
-        range = [range_scaling, ] * len(weights_scaling) + [range_translation, ] * len(weights_translation)
+        # Create array with range for each scaling and translation parameter
+        range = [self.scale_range, ] * len(weights_scaling) + [self.translation_range, ] * len(weights_translation)
         indv_template = DecimalIndividual(ranges=range, eps=0.001)
-        population = Population(indv_template=indv_template, size=26)
+        population = Population(indv_template=indv_template, size=self.pop_size)
         population.init()
 
         engine = GAEngine(
@@ -38,7 +62,9 @@ class Tuner:
             fitness=self.fitnessFunction,
             analysis=[ConsoleOutputAnalysis]
         )
-        engine.run(ng=20)
+
+        # Run the GA with the specified number of iterations
+        engine.run(ng=self.max_iterations)
 
         # Get the best individual.
         best_indv = engine.population.best_indv(engine.fitness)
