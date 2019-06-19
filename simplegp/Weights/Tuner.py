@@ -10,7 +10,7 @@ from simplegp.Fitness.FitnessFunction import SymbolicRegressionFitness
 from simplegp.Nodes import BaseNode
 
 
-class Tunner:
+class Tuner:
 
     def __init__(self, fitness: SymbolicRegressionFitness):
         self.individual = None

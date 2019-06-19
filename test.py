@@ -8,7 +8,7 @@ from simplegp.Evolution.Evolution import SimpleGP
 from simplegp.Fitness.FitnessFunction import SymbolicRegressionFitness
 # Internal imports
 from simplegp.Nodes.SymbolicRegressionNodes import *
-from simplegp.Weights.Tuner import Tunner
+from simplegp.Weights.Tuner import Tuner
 
 np.random.seed(42)
 random.seed(42)
@@ -27,7 +27,7 @@ for i in range(X.shape[1]):
     terminals.append(FeatureNode(i))  # add a feature node for each feature
 
 # Run GP
-tunner = Tunner(fitness_function)
+tunner = Tuner(fitness_function)
 sgp = SimpleGP(fitness_function, functions, terminals, tunner, pop_size=100, max_generations=100)
 sgp.run()
 
