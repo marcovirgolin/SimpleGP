@@ -1,22 +1,25 @@
-from distutils.core import setup
+import setuptools
 
-setup(
+with open('README.md', 'r') as fh:
+    long_description = fh.read()
+
+setuptools.setup(
     name='SimpleGP',
-    version='0.9',
+    version='0.9.1',
     author='Marco Virgolin',
     author_email='marco.virgolin@gmail.com',
     url='https://github.com/marcovirgolin/SimpleGP',
-    packages=[
-        'simplegp',
-    	'simplegp.Evolution',
-    	'simplegp.Fitness',
-    	'simplegp.Nodes',
-    	'simplegp.Selection',
-    	'simplegp.Variation',
-    ],
-    license='The MIT License',
-    long_description=open('README.md').read(),
+    packages=setuptools.find_packages(),
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    setup_requires=['wheel'],
     install_requires=[
-    	"numpy >= 1.16.1",
+    	'numpy >= 1.16.1','sklearn'
     ],
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    python_requires='>=3.7',
 )
