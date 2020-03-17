@@ -42,6 +42,16 @@ class Node:	# Base class with general functionalities
 			n = n.parent
 		return d
 
+	def GetHeight(self):
+		subtree = self.GetSubtree()
+		leaves = [x for x in subtree if x.arity == 0]
+		max_h = 0
+		for l in leaves:
+			d = l.GetDepth()
+			if d > max_h:
+				max_h = d
+		return max_h
+
 	def __GetSubtreeRecursive( self, result ):
 		result.append(self)
 		for c in self._children:

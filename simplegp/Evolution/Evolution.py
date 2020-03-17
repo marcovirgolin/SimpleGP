@@ -22,7 +22,8 @@ class SimpleGP:
 		max_time=-1,
 		initialization_max_tree_height=4,
 		max_tree_size=100,
-		tournament_size=4
+		tournament_size=4,
+		verbose=False
 		):
 
 		self.pop_size = pop_size
@@ -42,6 +43,8 @@ class SimpleGP:
 
 		self.generations = 0
 
+		self.verbose = verbose
+
 
 	def __ShouldTerminate(self):
 		must_terminate = False
@@ -53,7 +56,7 @@ class SimpleGP:
 		elif self.max_time > 0 and elapsed_time >= self.max_time:
 			must_terminate = True
 
-		if must_terminate:
+		if must_terminate and self.verbose:
 			print('Terminating at\n\t', 
 				self.generations, 'generations\n\t', self.fitness_function.evaluations, 'evaluations\n\t', np.round(elapsed_time,2), 'seconds')
 
@@ -64,10 +67,25 @@ class SimpleGP:
 
 		self.start_time = time.time()
 
+		# ramped half-n-half initialization
 		population = []
-		for i in range( self.pop_size ):
-			population.append( Variation.GenerateRandomTree( self.functions, self.terminals, self.initialization_max_tree_height ) )
-			self.fitness_function.Evaluate( population[i] )
+		curr_max_depth = 2
+		init_depth_interval = self.pop_size / (self.initialization_max_tree_height - 1) / 2
+		next_depth_interval = init_depth_interval
+
+		for i in range( int(self.pop_size/2) ):
+			if i >= next_depth_interval:
+				next_depth_interval += init_depth_interval
+				curr_max_depth += 1
+
+			g = Variation.GenerateRandomTree( self.functions, self.terminals, curr_max_depth, curr_height=0, method='grow' )
+			self.fitness_function.Evaluate( g )
+			population.append( g )
+			
+			f = Variation.GenerateRandomTree( self.functions, self.terminals, curr_max_depth, curr_height=0, method='full' ) 
+			self.fitness_function.Evaluate( f )
+			population.append( f )
+
 
 		while not self.__ShouldTerminate():
 
@@ -94,4 +112,5 @@ class SimpleGP:
 
 			self.generations = self.generations + 1
 
-			print ('g:',self.generations,'elite fitness:', np.round(self.fitness_function.elite.fitness,3), ', size:', len(self.fitness_function.elite.GetSubtree()))
+			if self.verbose:
+				print ('g:',self.generations,'elite fitness:', np.round(self.fitness_function.elite.fitness,3), ', size:', len(self.fitness_function.elite.GetSubtree()))

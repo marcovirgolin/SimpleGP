@@ -4,20 +4,25 @@ from numpy.random import randint
 from numpy.random import random
 
 
-def GenerateRandomTree(functions, terminals, max_height, curr_height=0):
+def GenerateRandomTree(functions, terminals, max_height, curr_height=0, method='grow'):
 
 	if curr_height == max_height:
 		idx = randint(len(terminals))
 		n = deepcopy( terminals[idx] )
 	else:
-		if random() < 0.5:
-			n = deepcopy( terminals[randint(len(terminals))] )
-		else:
+		if method == 'grow':
+			term_n_funs = terminals + functions
+			idx = randint( len(term_n_funs) )
+			n = deepcopy( term_n_funs[idx] )
+		elif method == 'full':
 			idx = randint( len(functions) )
 			n = deepcopy( functions[idx] )
-			for i in range(n.arity):
-				c = GenerateRandomTree( functions, terminals, max_height, curr_height=curr_height + 1 )
-				n.AppendChild( c ) # do not use n.children.append because that won't set the n as parent node of c
+		else:
+			raise ValueError('Unrecognized tree generation method')
+
+		for i in range(n.arity):
+			c = GenerateRandomTree( functions, terminals, max_height, curr_height=curr_height + 1, method=method )
+			n.AppendChild( c ) # do not use n.children.append because that won't set the n as parent node of c
 
 	return n
 

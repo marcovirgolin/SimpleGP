@@ -3,10 +3,13 @@ from copy import deepcopy
 
 class SymbolicRegressionFitness:
 
-	def __init__( self, X_train, y_train ):
+	def __init__( self, X_train, y_train, use_linear_scaling=True ):
 		self.X_train = X_train
 		self.y_train = y_train
+		self.use_linear_scaling = use_linear_scaling
 		self.elite = None
+		self.elite_scaling_a = 0.0
+		self.elite_scaling_b = 1.0
 		self.evaluations = 0
 
 	def Evaluate( self, individual ):
@@ -15,9 +18,23 @@ class SymbolicRegressionFitness:
 
 		output = individual.GetOutput( self.X_train )
 
-		mean_squared_error = np.mean ( np.square( self.y_train - output ) )
-		individual.fitness = mean_squared_error
+		a = 0.0
+		b = 1.0
+
+		if self.use_linear_scaling:
+			b = np.cov(self.y_train, output)[0,1] / (np.var(output) + 1e-10)
+			a = np.mean(self.y_train) - b*np.mean(output)
+
+		scaled_output = a + b*output
+
+		fit_error = np.mean( np.square( self.y_train - scaled_output ) )
+		if np.isnan(fit_error):
+			fit_error = np.inf
+
+		individual.fitness = fit_error
 
 		if not self.elite or individual.fitness < self.elite.fitness:
 			del self.elite
 			self.elite = deepcopy(individual)
+			self.elite_scaling_a = a 
+			self.elite_scaling_b = b

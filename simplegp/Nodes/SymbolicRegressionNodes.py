@@ -3,7 +3,6 @@ import numpy as np
 from simplegp.Nodes.BaseNode import Node
 
 class AddNode(Node):
-	
 	def __init__(self):
 		super(AddNode,self).__init__()
 		self.arity = 2
@@ -53,7 +52,7 @@ class DivNode(Node):
 	def GetOutput( self, X ):
 		X0 = self._children[0].GetOutput( X )
 		X1 = self._children[1].GetOutput( X )
-		return np.multiply( np.sign(X1), X0) / ( 1e-2 + np.abs(X1) )
+		return np.multiply( np.sign(X1), X0) / ( 1e-6 + np.abs(X1) )
 
 class AnalyticQuotientNode(Node):
 	def __init__(self):

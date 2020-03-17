@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='SimpleGP',
-    version='0.5',
+    version='0.9',
     author='Marco Virgolin',
     author_email='marco.virgolin@gmail.com',
     url='https://github.com/marcovirgolin/SimpleGP',
