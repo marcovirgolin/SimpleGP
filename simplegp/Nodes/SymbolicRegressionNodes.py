@@ -132,12 +132,17 @@ class FeatureNode(Node):
 
 	
 class EphemeralRandomConstantNode(Node):
-	def __init__(self):
+	def __init__(self, interval=None):
 		super(EphemeralRandomConstantNode,self).__init__()
 		self.c = np.nan
+		self.interval = interval
 
 	def __Instantiate(self):
-		self.c = np.round( np.random.random() * 10 - 5, 3 )
+		if not self.interval:
+			self.c = np.round( np.random.random() * 10 - 5, 3 )
+		else:
+			rand_const = np.random.random() * (self.interval[1] - self.interval[0]) + self.interval[0]
+			self.c = np.round( rand_const, 3 )
 
 	def __repr__(self):
 		if np.isnan(self.c):
