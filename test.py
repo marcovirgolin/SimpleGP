@@ -32,7 +32,6 @@ gpe.fit(X,y)
 get_elitist_info = gpe.get_elitist_info()
 print(get_elitist_info[0].GetSubtree(), get_elitist_info[1], get_elitist_info[2])
 
-
 from sklearn.model_selection import cross_validate
 
 cv_result = cross_validate(gpe, X, y, scoring='neg_mean_squared_error', cv=5)

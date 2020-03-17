@@ -36,16 +36,16 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 		self.X_ = X
 		self.y_ = y
 		
-		self.fitness_function = SymbolicRegressionFitness( X, y, self.use_linear_scaling )
+		fitness_function = SymbolicRegressionFitness( X, y, self.use_linear_scaling )
 		
-		self.terminals = []
+		terminals = []
 		if self.use_erc:
-			self.terminals.append( EphemeralRandomConstantNode() )
+			terminals.append( EphemeralRandomConstantNode() )
 		n_features = X.shape[1]
 		for i in range(n_features):
-			self.terminals.append(FeatureNode(i))
+			terminals.append(FeatureNode(i))
 
-		self.sgp = SimpleGP(self.fitness_function, self.functions, self.terminals, 
+		sgp = SimpleGP(fitness_function, self.functions, terminals, 
 			pop_size=self.pop_size, 
 			max_generations=self.max_generations,
 			max_time = self.max_time,
@@ -57,20 +57,22 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 			tournament_size=self.tournament_size,
 			verbose=self.verbose)
 
-		self.sgp.Run()
+		sgp.Run()
 
-		self.estimator_ = self.sgp
+		self.gp_ = sgp
 
 		return self
 
 	def predict(self, X):
 		# Check fit has been called
-		check_is_fitted(self, ['estimator_'])
+		check_is_fitted(self, ['gp_'])
 
 		# Input validation
 		X = check_array(X)
 
-		prediction = self.fitness_function.elite_scaling_a + self.fitness_function.elite_scaling_b * self.fitness_function.elite.GetOutput( X )
+		fifu = self.gp_.fitness_function
+
+		prediction = fifu.elite_scaling_a + fifu.elite_scaling_b * fifu.elite.GetOutput( X )
 
 		return prediction
 
@@ -91,6 +93,8 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 		for a in attributes:
 			dic[a[0]] = a[1]
 
+		print(dic)
+
 		return dic
 
 
@@ -100,6 +104,6 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 		return self
 
 	def get_elitist_info(self):
-		check_is_fitted(self, ['estimator_'])
-		result = ( self.fitness_function.elite, self.fitness_function.elite_scaling_a, self.fitness_function.elite_scaling_b )
+		check_is_fitted(self, ['gp_'])
+		result = ( self.gp_.fitness_function.elite, self.gp_.fitness_function.elite_scaling_a, self.gp_.fitness_function.elite_scaling_b )
 		return result
