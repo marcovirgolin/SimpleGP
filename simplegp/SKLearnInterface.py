@@ -93,8 +93,6 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 		for a in attributes:
 			dic[a[0]] = a[1]
 
-		print(dic)
-
 		return dic
 
 
