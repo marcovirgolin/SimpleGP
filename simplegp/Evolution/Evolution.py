@@ -22,6 +22,7 @@ class SimpleGP:
 		max_time=-1,
 		initialization_max_tree_height=4,
 		max_tree_size=100,
+		max_features=-1,
 		tournament_size=4,
 		verbose=False
 		):
@@ -39,6 +40,7 @@ class SimpleGP:
 
 		self.initialization_max_tree_height = initialization_max_tree_height
 		self.max_tree_size = max_tree_size
+		self.max_features = max_features
 		self.tournament_size = tournament_size
 
 		self.generations = 0
@@ -99,9 +101,19 @@ class SimpleGP:
 				if ( random() < self.mutation_rate ):
 					o = Variation.SubtreeMutation( o, self.functions, self.terminals, max_height=self.initialization_max_tree_height )
 				
-				if len(o.GetSubtree()) > self.max_tree_size:
+				invalid_offspring = False
+				if (self.max_tree_size > -1 and len(o.GetSubtree()) > self.max_tree_size):
+					invalid_offspring = True
+				elif self.max_features > -1:
+					features = set()
+					for n in o.GetSubtree():
+						if hasattr(n, 'id'):
+							features.add(n.id)
+					if len(features) > self.max_features:
+						invalid_offspring = True
+				if invalid_offspring:
 					del o
-					o = deepcopy( population[i] )
+					o = deepcopy(population[i])
 				else:
 					self.fitness_function.Evaluate(o)
 

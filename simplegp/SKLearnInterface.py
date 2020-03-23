@@ -21,7 +21,8 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 		mutation_rate=0.5,
 		initialization_max_tree_height=6,
 		tournament_size=4,
-		max_tree_size=100, use_linear_scaling=True, verbose=False ):
+		max_tree_size=100, max_features=-1, 
+		use_linear_scaling=True, verbose=False ):
 
 		args, _, _, values = inspect.getargvalues(inspect.currentframe())
 		values.pop('self')
@@ -54,6 +55,7 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 			mutation_rate=self.mutation_rate,
 			initialization_max_tree_height=self.initialization_max_tree_height,
 			max_tree_size=self.max_tree_size,
+			max_features=self.max_features,
 			tournament_size=self.tournament_size,
 			verbose=self.verbose)
 
