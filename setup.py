@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='SimpleGP',
-    version='0.9.3',
+    version='0.9.4',
     author='Marco Virgolin',
     author_email='marco.virgolin@gmail.com',
     url='https://github.com/marcovirgolin/SimpleGP',
