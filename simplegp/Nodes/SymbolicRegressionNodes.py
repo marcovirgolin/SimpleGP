@@ -54,7 +54,7 @@ class DivNode(Node):
 		X1 = self._children[1].GetOutput( X )
 		sign_X1 = np.sign(X1)
 		sign_X1[sign_X1==0]=1
-		return np.multiply( np.sign(X1), X0) / ( 1e-6 + np.abs(X1) )
+		return np.multiply( sign_X1, X0) / ( 1e-6 + np.abs(X1) )
 
 class AnalyticQuotientNode(Node):
 	def __init__(self):
