@@ -9,6 +9,16 @@ This Python 3 code is a simple implementation of genetic programming for symboli
 You can install it with pip using `python3 -m pip install --user simplegp`, or locally by downloading the code and running `python3 setup.py install --user`.
 
 ## Reference
-If you use this code, please support our research by citing the [paper](https://arxiv.org/abs/2004.11170) that used it as a base to develop a [multi-objective version](https://github.com/marcovirgolin/pyNSGP):
+If you use this code, please support our research by citing one (or more) of our works for which this code was made or adopted: 
 
-> M. Virgolin, A. De Lorenzo, E. Medvet, F. Randone. "Learning a Formula of Interpretability to Learn Interpretable Formulas". arXiv preprint arXiv:2004.11170 (2020)
+> M. Virgolin, A. De Lorenzo, E. Medvet, F. Randone. "Learning a Formula of Interpretability to Learn Interpretable Formulas". [Parallel Problem Solving from Nature -- PPSN XVI, pp. 79--93](https://link.springer.com/chapter/10.1007/978-3-030-58115-2_6), Springer (2020). ([arXiv preprint arXiv:2004.11170](https://arxiv.org/abs/2004.11170))
+
+
+
+
+
+> M. Virgolin. "Simple Simultaneous Ensemble Learning in Genetic Programming". [arXiv preprint arXiv:2009.06037](https://arxiv.org/abs/2009.06037) (2020)
+
+
+## Multi-objective
+For a multi-objective version, see [pyNSGP](https://github.com/marcovirgolin/pyNSGP).
