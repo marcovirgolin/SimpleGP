@@ -17,7 +17,7 @@ If you use this code, please support our research by citing one (or more) of our
 
 
 
-> M. Virgolin. "Simple Simultaneous Ensemble Learning in Genetic Programming". [arXiv preprint arXiv:2009.06037](https://arxiv.org/abs/2009.06037) (2020)
+> M. Virgolin. "Genetic Programming is Naturally Suited to Evolve Bagging Ensembles". [arXiv preprint arXiv:2009.06037v4](https://arxiv.org/abs/2009.06037v4) (2020)
 
 
 ## Multi-objective
