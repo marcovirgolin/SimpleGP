@@ -44,7 +44,7 @@ print('Best individual found:', elite_str)
 
 # Show mean squared error
 print('Train MSE:',np.mean(np.square(y_train - gpe.predict(X_train))))
-print('Test RMSE:',np.mean(np.square(y_test - gpe.predict(X_test))))
+print('Test MSE:',np.mean(np.square(y_test - gpe.predict(X_test))))
 
 # A simple example of retrieving info about the population
 population = gpe.get_population()
