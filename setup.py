@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='SimpleGP',
-    version='0.9.5',
+    version='0.9.9',
     author='Marco Virgolin',
     author_email='marco.virgolin@gmail.com',
     url='https://github.com/marcovirgolin/SimpleGP',
@@ -14,7 +14,7 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     setup_requires=['wheel'],
     install_requires=[
-    	'numpy >= 1.16.1','sklearn'
+    	'numpy >= 1.16.1','scikit-learn >= 0.20.0'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

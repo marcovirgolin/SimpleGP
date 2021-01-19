@@ -14,6 +14,11 @@ class Node:	# Base class with general functionalities
 		self.__GetSubtreeRecursive(result)
 		return result
 
+	def GetHumanExpression( self ):
+		result = [ '' ]	# trick to pass string by reference
+		self._GetHumanExpressionRecursive(result)
+		return result[0]
+
 	def AppendChild( self, N ):
 		self._children.append(N)
 		N.parent = self
@@ -57,4 +62,17 @@ class Node:	# Base class with general functionalities
 		for c in self._children:
 			c.__GetSubtreeRecursive( result )
 		return result
+
+	def _GetHumanExpressionRecursive( self, result ):
+		args = []
+		for i in range(self.arity):
+			self._children[i]._GetHumanExpressionRecursive( result )
+			args.append( result[0] )
+		result[0] = self._GetHumanExpressionSpecificNode( args )
+		return result
+
+
+	def _GetHumanExpressionSpecificNode( self, args ):
+		raise NotImplementedError('_GetHumanExpressionSpecificNode is not implemented for base class BaseNode')
+
 

@@ -6,6 +6,7 @@ from copy import deepcopy
 from simplegp.Variation import Variation
 from simplegp.Selection import Selection
 
+import inspect
 
 class SimpleGP:
 
@@ -17,9 +18,11 @@ class SimpleGP:
 		pop_size=500,
 		crossover_rate=0.5,
 		mutation_rate=0.5,
+		op_mutation_rate=0.0,
 		max_evaluations=-1,
 		max_generations=-1,
 		max_time=-1,
+		min_height=2,
 		initialization_max_tree_height=4,
 		max_tree_size=100,
 		max_features=-1,
@@ -27,25 +30,13 @@ class SimpleGP:
 		verbose=False
 		):
 
-		self.pop_size = pop_size
-		self.fitness_function = fitness_function
-		self.functions = functions
-		self.terminals = terminals
-		self.crossover_rate = crossover_rate
-		self.mutation_rate = mutation_rate
+		args, _, _, values = inspect.getargvalues(inspect.currentframe())
+		values.pop('self')
+		for arg, val in values.items():
+			setattr(self, arg, val)
 
-		self.max_evaluations = max_evaluations
-		self.max_generations = max_generations
-		self.max_time = max_time
-
-		self.initialization_max_tree_height = initialization_max_tree_height
-		self.max_tree_size = max_tree_size
-		self.max_features = max_features
-		self.tournament_size = tournament_size
-
+		self.population = []
 		self.generations = 0
-
-		self.verbose = verbose
 
 
 	def __ShouldTerminate(self):
@@ -69,9 +60,9 @@ class SimpleGP:
 
 		self.start_time = time.time()
 
-		# ramped half-n-half initialization
-		population = []
-		curr_max_depth = 2
+		# Initialization ramped half-n-half
+		self.population = []
+		curr_max_depth = self.min_height
 		init_depth_interval = self.pop_size / (self.initialization_max_tree_height - 1) / 2
 		next_depth_interval = init_depth_interval
 
@@ -80,30 +71,40 @@ class SimpleGP:
 				next_depth_interval += init_depth_interval
 				curr_max_depth += 1
 
-			g = Variation.GenerateRandomTree( self.functions, self.terminals, curr_max_depth, curr_height=0, method='grow' )
+			g = Variation.GenerateRandomTree( self.functions, self.terminals, curr_max_depth, curr_height=0, method='grow', min_height=self.min_height )
 			self.fitness_function.Evaluate( g )
-			population.append( g )
+			self.population.append( g )
 			
-			f = Variation.GenerateRandomTree( self.functions, self.terminals, curr_max_depth, curr_height=0, method='full' ) 
+			f = Variation.GenerateRandomTree( self.functions, self.terminals, curr_max_depth, curr_height=0, method='full', min_height=self.min_height ) 
 			self.fitness_function.Evaluate( f )
-			population.append( f )
+			self.population.append( f )
 
-
+		# Generational loop
 		while not self.__ShouldTerminate():
 
 			O = []
 			
+			# Variation
 			for i in range( self.pop_size ):
+				o = deepcopy(self.population[i])
+				variation_happened = False
+				while not variation_happened:
+					if ( random() < self.crossover_rate ):
+						o = Variation.SubtreeCrossover( o, self.population[ randint( self.pop_size ) ] )
+						variation_happened = True
+					if ( random() < self.mutation_rate ):
+						o = Variation.SubtreeMutation( o, self.functions, self.terminals, max_height=self.initialization_max_tree_height, min_height=self.min_height )
+						variation_happened = True
+					if ( random() < self.op_mutation_rate ):
+						o = Variation.OnePointMutation( o, self.functions, self.terminals )
+						variation_happened = True
 				
-				o = deepcopy(population[i])
-				if ( random() < self.crossover_rate ):
-					o = Variation.SubtreeCrossover( o, population[ randint( self.pop_size ) ] )
-				if ( random() < self.mutation_rate ):
-					o = Variation.SubtreeMutation( o, self.functions, self.terminals, max_height=self.initialization_max_tree_height )
-				
+				# check offspring meets constraints	
 				invalid_offspring = False
 				if (self.max_tree_size > -1 and len(o.GetSubtree()) > self.max_tree_size):
 					invalid_offspring = True
+				elif (o.GetHeight() < self.min_height):
+					invalid_offspring = True	
 				elif self.max_features > -1:
 					features = set()
 					for n in o.GetSubtree():
@@ -113,14 +114,15 @@ class SimpleGP:
 						invalid_offspring = True
 				if invalid_offspring:
 					del o
-					o = deepcopy(population[i])
+					o = deepcopy(self.population[i])
 				else:
 					self.fitness_function.Evaluate(o)
 
 				O.append(o)
 
-			PO = population+O
-			population = Selection.TournamentSelect( PO, self.pop_size, tournament_size=self.tournament_size )
+			# Selection
+			PO = self.population+O
+			self.population = Selection.TournamentSelect( PO, self.pop_size, tournament_size=self.tournament_size )
 
 			self.generations = self.generations + 1
 

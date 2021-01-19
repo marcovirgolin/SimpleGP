@@ -4,32 +4,70 @@ from numpy.random import randint
 from numpy.random import random
 
 
-def GenerateRandomTree(functions, terminals, max_height, curr_height=0, method='grow'):
+def GenerateRandomTree(functions, terminals, max_height, curr_height=0, method='grow', min_height=2):
 
 	if curr_height == max_height:
 		idx = randint(len(terminals))
 		n = deepcopy( terminals[idx] )
 	else:
-		if method == 'grow':
+		if method == 'grow' and curr_height	>= min_height:
 			term_n_funs = terminals + functions
 			idx = randint( len(term_n_funs) )
 			n = deepcopy( term_n_funs[idx] )
-		elif method == 'full':
+		elif method == 'full' or (method == 'grow' and curr_height < min_height):
 			idx = randint( len(functions) )
 			n = deepcopy( functions[idx] )
 		else:
 			raise ValueError('Unrecognized tree generation method')
 
 		for i in range(n.arity):
-			c = GenerateRandomTree( functions, terminals, max_height, curr_height=curr_height + 1, method=method )
+			c = GenerateRandomTree( functions, terminals, max_height, curr_height=curr_height + 1, method=method, min_height=min_height )
 			n.AppendChild( c ) # do not use n.children.append because that won't set the n as parent node of c
 
 	return n
 
 
-def SubtreeMutation( individual, functions, terminals, max_height=4 ):
+def OnePointMutation( individual, functions, terminals ):
+	
+	arity_functions = {}
+	for f in functions:
+		arity = f.arity
+		if arity not in arity_functions:
+			arity_functions[arity] = [f]
+		else:
+			arity_functions[arity].append(f)
 
-	mutation_branch = GenerateRandomTree( functions, terminals, max_height )
+	nodes = individual.GetSubtree()
+	prob = 1.0/len(nodes)
+
+	for i in range(len(nodes)):
+		if random() < prob:
+			arity = nodes[i].arity 
+			if arity == 0:
+				idx = randint( len(terminals) )
+				n = deepcopy( terminals[idx] )
+			else:
+				idx = randint(len(arity_functions[arity]))
+				n = deepcopy(arity_functions[arity][idx])
+			
+			# update link to children
+			for child in nodes[i]._children:
+				n.AppendChild(child)
+				
+			# update link to parent node
+			p = nodes[i].parent
+			if p:
+				idx = p.DetachChild( nodes[i] )
+				p.InsertChildAtPosition(idx, n)
+			else:
+				nodes[i] = n
+				individual = n
+
+	return individual
+
+def SubtreeMutation( individual, functions, terminals, max_height=4, min_height=2 ):
+
+	mutation_branch = GenerateRandomTree( functions, terminals, max_height, min_height=min_height )
 	
 	nodes = individual.GetSubtree()
 

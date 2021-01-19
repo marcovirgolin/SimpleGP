@@ -19,6 +19,8 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 		use_erc=True,
 		crossover_rate=0.5,
 		mutation_rate=0.5,
+		op_mutation_rate=0.0,
+		min_height=2,
 		initialization_max_tree_height=6,
 		tournament_size=4,
 		max_tree_size=100, max_features=-1, 
@@ -53,6 +55,7 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 			max_evaluations = self.max_evaluations,
 			crossover_rate=self.crossover_rate,
 			mutation_rate=self.mutation_rate,
+			min_height=self.min_height,	
 			initialization_max_tree_height=self.initialization_max_tree_height,
 			max_tree_size=self.max_tree_size,
 			max_features=self.max_features,
@@ -86,7 +89,6 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 		prediction = self.predict(X)
 		return -1.0 * np.mean(np.square(y - prediction))
 
-
 	def get_params(self, deep=True):
 		attributes = inspect.getmembers(self, lambda a:not(inspect.isroutine(a)))
 		attributes = [a for a in attributes if not (a[0].endswith('_') or a[0].startswith('_'))]
@@ -97,7 +99,6 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 
 		return dic
 
-
 	def set_params(self, **parameters):
 		for parameter, value in parameters.items():
 			setattr(self, parameter, value)
@@ -107,3 +108,7 @@ class GPSymbolicRegressionEstimator(BaseEstimator, RegressorMixin):
 		check_is_fitted(self, ['gp_'])
 		result = ( self.gp_.fitness_function.elite, self.gp_.fitness_function.elite_scaling_a, self.gp_.fitness_function.elite_scaling_b )
 		return result
+
+	def get_population(self):
+		check_is_fitted(self, ['gp_'])
+		return self.gp_.population
