@@ -1,3 +1,7 @@
+## Note
+This repo will most likely no longer be extended. 
+Please take a look at [genepro](https://github.com/marcovirgolin/genepro) instead. `genepro` attempts to be an overall better version of a simple GP baseline in python, which goes beyond regression alone.
+
 # Simple Genetic Programming 
 ### For Symbolic Regression
 This Python 3 code is a simple implementation of genetic programming for symbolic regression, and has been developed for educational purposes.
